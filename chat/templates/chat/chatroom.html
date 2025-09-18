@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Chatroom</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html, body {
+            height: 100%;
+            width: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f7f7;
+            color: #333;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+            padding: 20px;
+            background: linear-gradient(to bottom right, #ffffff, #eaf6ff);
+        }
+
+        h2 {
+            text-align: center;
+            font-weight: 500;
+            margin-bottom: 15px;
+            color: #222;
+        }
+
+        .chat-messages {
+            flex: 1;
+            border-radius: 12px;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #fafafa;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .chat-messages p {
+            margin: 0;
+            padding: 8px 12px;
+            border-radius: 12px;
+            max-width: 70%;
+            word-wrap: break-word;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .chat-messages p.self {
+            background-color: #d0f0c0;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        .chat-messages p.other {
+            background-color: #e4f1ff;
+            align-self: flex-start;
+            text-align: left;
+        }
+
+        .chat-messages b {
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        .chat-form {
+            display: flex;
+            flex-direction: column;
+            margin-top: 10px;
+        }
+
+        .chat-form textarea {
+            width: 100%;
+            resize: none;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+            font-size: 14px;
+            transition: border-color 0.2s;
+        }
+
+        .chat-form textarea:focus {
+            border-color: #4a90e2;
+            outline: none;
+        }
+
+        .chat-form button {
+            margin-top: 8px;
+            padding: 12px;
+            border-radius: 12px;
+            border: none;
+            background-color: #4a90e2;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .chat-form button:hover {
+            background-color: #357ab7;
+        }
+    </style>
+</head>
+<body>
+<div class="chat-container">
+    <h2>Welcome, {{ username }}!</h2>
+
+    <div class="chat-messages">
+        {% for msg in messages %}
+            <p class="{% if msg.username == username %}self{% else %}other{% endif %}">
+                <b>{{ msg.username }}</b> ({{ msg.timestamp|date:"H:i" }}): {{ msg.text }}
+            </p>
+        {% endfor %}
+    </div>
+
+    <form method="post" class="chat-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Send</button>
+    </form>
+</div>
+
+<script>
+    // Auto-scroll chat container to bottom
+    const chatContainer = document.querySelector(".chat-messages");
+    if (chatContainer) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+    }
+</script>
+</body>
+</html>
